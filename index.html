@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Guess Game</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: url('zoro-background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            transition: background-color 0.5s ease;
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+            background: #ffffff;
+            border: 2px solid #3498db;
+        }
+        .card-img-top {
+            border-radius: 15px 15px 0 0;
+            filter: brightness(0.9);
+        }
+        .alert {
+            font-size: 1.5rem;
+            color: #3498db;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+        }
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+            font-weight: bold;
+        }
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        .form-control {
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            color: #333;
+        }
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: none;
+        }
+        .alert-message {
+            margin-top: 1rem;
+        }
+        .alert-message.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <div class="alert alert-warning" role="alert">
+            Random Guess Game
+        </div>
+        <div class="d-flex justify-content-center">
+            <div class="card" style="width: 20rem;">
+                <img src="1st.jpg" class="card-img-top" alt="Game Image">
+                <div class="card-body">
+                    <h5 class="card-title">Guess a number between 1 and 100</h5>
+                    <input type="number" id="userInput" class="form-control" min="1" max="100" placeholder="Enter your number">
+                    <button class="btn btn-primary mt-3" onclick="guessNumber()">Submit</button>
+                    <div id="resultMessage" class="alert-message"></div>
+                    <div id="attemptsMessage" class="alert-message"></div>
+                    <div id="hintMessage" class="alert-message"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let attempts = 3;
+        let randomNumber = Math.floor(Math.random() * 100) + 1;
+
+        function guessNumber() {
+            let userInput = parseInt(document.getElementById("userInput").value);
+            let resultMessage = document.getElementById("resultMessage");
+            let attemptsMessage = document.getElementById("attemptsMessage");
+            let hintMessage = document.getElementById("hintMessage");
+
+            // Clear previous result messages
+            resultMessage.innerHTML = '';
+            attemptsMessage.innerHTML = '';
+            hintMessage.innerHTML = '';
+
+            if (isNaN(userInput) || userInput < 1 || userInput > 100) {
+                resultMessage.innerHTML = '<div class="alert alert-danger" role="alert">Please enter a valid number between 1 and 100.</div>';
+                return;
+            }
+
+            // Provide hint
+            let difference = Math.abs(randomNumber - userInput);
+            let hint = '';
+
+            if (difference === 0) {
+                resultMessage.innerHTML = '<div class="alert alert-success" role="alert">Congratulations! You guessed the correct number: ' + randomNumber + '</div>';
+                document.getElementById("userInput").disabled = true;
+                document.body.style.backgroundColor = 'green';  // Set background color to green on win
+                return;
+            } else if (difference <= 5) {
+                hint = 'You are <strong>hot</strong>!';
+            } else if (difference <= 20) {
+                hint = 'You are <strong>warm</strong>.';
+            } else {
+                hint = 'You are <strong>cold</strong>.';
+            }
+
+            attempts--;
+
+            if (attempts === 0) {
+                resultMessage.innerHTML = '<div class="alert alert-danger" role="alert">Sorry, you have used all your attempts. The correct number was: ' + randomNumber + '</div>';
+                document.getElementById("userInput").disabled = true;
+                document.body.style.backgroundColor = 'red';  // Set background color to red on lose
+            } else {
+                attemptsMessage.innerHTML = '<div class="alert alert-info" role="alert">Incorrect! You have ' + attempts + ' attempt(s) left.</div>';
+                hintMessage.innerHTML = '<div class="alert alert-info" role="alert">' + hint + '</div>';
+            }
+
+            console.log("Random Number: " + randomNumber);
+            console.log("User Input: " + userInput);
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
